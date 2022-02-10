@@ -1,0 +1,46 @@
+PS C:\Users\zc01485\CODE\TeamsAutomation\TeamsProvisioningToolSet> get-msolaccountsku
+
+
+AccountSkuId                                ActiveUnits WarningUnits ConsumedUnits
+------------                                ----------- ------------ -------------
+CIE491264:INTUNE_A_D                        25          0            0
+CIE491264:EMSPREMIUM                        20          0            20
+CIE491264:ENTERPRISEPREMIUM                 20          0            19
+CIE491264:ENTERPRISEPACK                    2           0            2
+CIE491264:Win10_VDA_E3                      20          0            1
+CIE491264:PHONESYSTEM_VIRTUALUSER           3           0            0
+CIE491264:MCOCAP                            25          0            4
+CIE491264:MEETING_ROOM                      25          0            3
+CIE491264:INFORMATION_PROTECTION_COMPLIANCE 20          0            1
+
+
+PS C:\Users\zc01485\CODE\TeamsAutomation\TeamsProvisioningToolSet> get-cstenant
+
+
+
+AssignedPlan                     : {MCOEV_VIRTUALUSER, Teams_Room_Standard, MCOEV, MCOProfessional...}
+City                             :
+CompanyPartnership               : {}
+CompanyTags                      : {o365.microsoft.com/signupexperience=GeminiSignUpUI, o365.microsoft.com/version=15, o365.microsoft.com/startdate=637775811844149741}
+Country                          :
+CountryAbbreviation              : US
+DirSyncEnabled                   :
+DisplayName                      : Contoso
+PostalCode                       : 10001
+PreferredLanguage                : en
+ProvisionedPlan                  : {MicrosoftCommunicationsOnline, YammerEnterprise, exchange, exchange...}
+ServiceInfo                      : []
+ServiceInstance                  : MicrosoftCommunicationsOnline/NOAM-ED6-A2
+SipDomain                        : {CIE491264.onmicrosoft.com}
+StateOrProvince                  : ny
+Street                           :
+TeamsUpgradeEffectiveMode        : TeamsOnly
+TeamsUpgradeNotificationsEnabled : False
+TeamsUpgradeOverridePolicy       : ProvisionedAsTeams
+TeamsUpgradePolicyIsReadOnly     : ModeAndNotifications
+TenantId                         : 4958e09f-4afe-47f1-8129-4d0b98ac8987
+VerifiedDomains                  : {CIE491264.onmicrosoft.com}
+WhenChanged                      : 10/02/2022 11:10:46
+WhenCreated                      :
+
+

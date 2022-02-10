@@ -1,0 +1,54 @@
+
+#Trunk contra los SBCs:
+	New-CsOnlinePSTNGateway -Identity sbc1.ibercaja.es -Enabled $true -forwardcallhistory $true -forwardPai $true -sendsipoptions $true -SipSignalingPort 5068 -MaxConcurrentSessions 10 -Mediabypass $false
+	New-CsOnlinePSTNGateway -Identity sbc2.ibercaja.es -Enabled $true -forwardcallhistory $true -forwardPai $true -sendsipoptions $true -SipSignalingPort 5068 -MaxConcurrentSessions 10 -Mediabypass $false
+
+
+#Directivas de voz:
+	Set-CsOnlinePstnUsage -Identity Global -Usage @{Add="PU-1"}
+	New-CsOnlineVoiceRoute -identity "allroutes" -NumberPattern ".*" -OnlinePstnGatewayList sbc1.ibercaja.es,sbc2.ibercaja.es -OnlinePstnUsages "PU-1"
+	New-CsOnlineVoiceRoutingPolicy "VoiceRoutingPolicy1" -OnlinePstnUsages "PU-1"
+
+
+#Creación de DialPlan (se crean dos, uno para usuarios mixtos y otro para estandar):
+	$NR180=New-CsVoiceNormalizationRule -Name 'Emergencia' -Parent COR-EMERGENCIA -Pattern '^((\+|00)34)?0?(0[986][12])$' -Translation '+34$3' -InMemory -Description "Emergencias"
+	$NR181=New-CsVoiceNormalizationRule -Name 'Emergencia2' -Parent COR-EMERGENCIA -Pattern '^((\+|00)34)?0?(0[8][058])$' -Translation '+34$3' -InMemory -Description "Emergencias"
+	$NR182=New-CsVoiceNormalizationRule -Name 'Emergencia3' -Parent COR-EMERGENCIA -Pattern '^((\+|00)34)?0?112$' -Translation '+34112' -InMemory -Description "Emergencias"
+	$NR183=New-CsVoiceNormalizationRule -Name 'Emergencia4' -Parent COR-EMERGENCIA -Pattern '^((\+|00)34)?0?(1006)$' -Translation '+34$3' -InMemory -Description "Emergencias"
+	
+	$NR101=New-CsVoiceNormalizationRule -Name 'Social-Service' -Parent COR-SS -Pattern '^((\+|00)34)?0?(0\d{2})$' -Translation '+340$3' -InMemory -Description "Social Services"
+	$NR102=New-CsVoiceNormalizationRule -Name 'Social-Service-2' -Parent COR-SS -Pattern '^((\+|00)34)?0?(116\d{3})$' -Translation '+340$3' -InMemory -Description "Social services"
+	$NR103=New-CsVoiceNormalizationRule -Name 'Directorio' -Parent COR-DIR-NO -Pattern '^((\+|00)34)?0?(118\d{2})$' -Translation '+34500608608' -InMemory -Description "Directorio"
+	$NR104=New-CsVoiceNormalizationRule -Name 'Short-codes' -Parent COR-SC -Pattern '((\+|00)34)?0?(1\d{3})$' -Translation '+340$3' -InMemory -Description "Short codes"
+	$NR108=New-CsVoiceNormalizationRule -Name 'Moviles' -Parent COR-MOVIL -Pattern '^((\+|00)34)?0?(6\d{8}|7[1-4]\d{7})$' -Translation '+34$3' -InMemory -Description "Moviles"
+	$NR109=New-CsVoiceNormalizationRule -Name 'Fijos' -Parent COR-FIJO -Pattern '^((\+|00)34)?0?(([89][1-9]\d{7}$|70\d{7}))$' -Translation '+34$3' -InMemory -Description "Fijos"
+	$NR110=New-CsVoiceNormalizationRule -Name 'Gratuitos' -Parent COR-GRATIS -Pattern '^((\+|00)34)?0?([89]00\d{6})$' -Translation '+34$3' -InMemory -Description "Gratuitos"
+	$NR111=New-CsVoiceNormalizationRule -Name 'Premium' -Parent COR-PREMIUM-N -Pattern '^((\+|00)34)?0?(80[367]\d{6})$' -Translation '+34500608608' -InMemory -Description "Adultos/entretenimiento/profesional"
+	$NR112=New-CsVoiceNormalizationRule -Name 'Televoto' -Parent COR-TELEVOTO-N -Pattern '^((\+|00)34)?0?(905\d{6})$' -Translation '+34500608608' -InMemory -Description "Televoto"
+	$NR113=New-CsVoiceNormalizationRule -Name 'Gasto-Compartido' -Parent COR-GASTO-COMPARTIDO -Pattern '^((\+|00)34)?0?(90[12]\d{6})$' -Translation '+34$3' -InMemory -Description "Gasto compartido"
+	$NR114=New-CsVoiceNormalizationRule -Name 'Internacional' -Parent COR-INTERNACIONAL -Pattern '^(?:\+|00)0?(1|7|2[07]|3[0-46]|39\d|4[013-9]|5[1-8]|6[0-6]|8[1246]|9[0-58]|2[1235689]\d|24[013-9]|242\d|3[578]\d|42\d|5[09]\d|6[789]\d|8[035789]\d|9[679]\d)(?:0)?(\d{6,14})(\D+\d+)?$' -Translation '+$1$2' -InMemory -Description "Internacionales"
+
+	new-CsTenantDialPlan -identity DP.STA-INTL-NOPREMIUM -Description "Plan de numeracion usuarios estandar"
+	set-CsTenantDialPlan -identity DP.STA-INTL-NOPREMIUM -normalizationrules @{ADD=$NR180,$NR181,$NR182,$NR183,$NR101,$NR102,$NR103,$NR104,$NR108,$NR109,$NR110,$NR111,$NR112,$NR113,$NR114}
+
+	new-CsTenantDialPlan -identity DP.MIX-INTL-NOPREMIUM -Description "Plan de numeracion usuarios mixto"
+	set-CsTenantDialPlan -identity DP.MIX-INTL-NOPREMIUM -normalizationrules @{ADD=$NR180,$NR181,$NR182,$NR183,$NR101,$NR102,$NR103,$NR104,$NR108,$NR109,$NR110,$NR111,$NR112,$NR113,$NR114}
+
+
+#Creación de directivas de voz:
+	new-CsTeamsCallingPolicy -identity CP-1 -AllowWebPSTNCalling $true -AllowPrivateCalling $true -AllowCallGroups $true -AllowDelegation $true -AllowCallForwardingToUser $true -AllowCallForwardingToPhone $true -AllowVoicemail UserOverride -PreventTollBypass $false -BusyOnBusyEnabledType disabled -MusicOnHoldEnabledType enabled -SafeTransferEnabled disabled
+	
+	new-CsCallingLineIdentity -Identity CI-1 -EnableUserOverride $false
+	new-CsCallingLineIdentity -Identity CI-Anonimo -EnableUserOverride $true -CallingIDSubstitute Anonymous
+	
+	New-CsTeamsCallParkPolicy -identity CPARK-1 -AllowCallPark $true
+
+
+#Aprovisionamiento de usuario:
+	Set-CsUser -Identity loriente@ibercaja.es -EnterpriseVoiceEnabled $true -HostedVoiceMail $true -OnPremLineURI tel:+34876247689
+	Grant-CsOnlineVoiceRoutingPolicy -Identity loriente@ibercaja.es -PolicyName "VoiceRoutingPolicy1"
+	Grant-CsTenantDialPlan -Identity loriente@ibercaja.es -PolicyName DP.STA-INTL-NOPREMIUM
+	
+	Grant-CsTeamsCallingPolicy -PolicyName "CP-1" -Identity loriente@ibercaja.es
+	Grant-CsCallingLineIdentity -Identity "loriente@ibercaja.es" -PolicyName "CI-1"
+	Grant-CsTeamsCallParkPolicy -Identity "loriente@ibercaja.es" -PolicyName "CPARK-1"
