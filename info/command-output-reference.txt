@@ -44,3 +44,109 @@ WhenChanged                      : 10/02/2022 11:10:46
 WhenCreated                      :
 
 
+PS C:\Users\zc01485\CODE\TeamsAutomation\TeamsProvisioningToolSet> Get-MsolSubscription
+
+
+ObjectId                                 SkuPartNumber                                                                                                                   Status          TotalLicenses  
+--------                                 -------------                                                                                                                   ------          -------------   
+aa7db938-063e-404f-af88-97016adb24f1     INTUNE_A_D                                                                                                                      Enabled         25
+3fc7f97a-0922-4e36-a61c-4c20a4ef91b2     EMSPREMIUM                                                                                                                      Enabled         20
+edbf1958-ca52-4e66-b919-3cd90c857ffd     ENTERPRISEPREMIUM                                                                                                               Enabled         20
+04cbde86-ae7e-4b9d-ad00-8e6a9702540b     ENTERPRISEPACK                                                                                                                  Enabled         2
+aced1f84-ac55-49d3-b95e-92184f859aaf     Win10_VDA_E3                                                                                                                    Enabled         20
+60c520b9-9278-48f3-87f5-8a04dff79b27     PHONESYSTEM_VIRTUALUSER                                                                                                         Enabled         3
+10e2214b-90bf-49e2-99cc-130250e9c2de     MCOCAP                                                                                                                          Enabled         25
+03e05915-6d8d-40cd-99dc-88217d23bdc7     MEETING_ROOM                                                                                                                    Enabled         25
+be353387-3b85-4f75-b444-5f70ec5c7432     INFORMATION_PROTECTION_COMPLIANCE                      
+
+
+PS C:\Users\zc01485\CODE\TeamsAutomation\TeamsProvisioningToolSet> Get-AzureADSubscribedSku | Select -Property Sku*,ConsumedUnits -ExpandProperty PrepaidUnits
+
+
+
+SkuId         : 2b317a4a-77a6-4188-9437-b68a77b4e2c6
+SkuPartNumber : INTUNE_A_D
+ConsumedUnits : 0
+Enabled       : 25
+Suspended     : 0
+Warning       : 0
+
+SkuId         : b05e124f-c7cc-45a0-a6aa-8cf78c946968
+SkuPartNumber : EMSPREMIUM
+ConsumedUnits : 20
+Enabled       : 20
+Suspended     : 0
+Warning       : 0
+
+SkuId         : c7df2760-2c81-4ef7-b578-5b5392b571df
+SkuPartNumber : ENTERPRISEPREMIUM
+ConsumedUnits : 19
+Enabled       : 20
+Suspended     : 0
+Warning       : 0
+
+SkuId         : 6fd2c87f-b296-42f0-b197-1e91e994b900
+SkuPartNumber : ENTERPRISEPACK
+ConsumedUnits : 2
+Enabled       : 2
+Suspended     : 0
+Warning       : 0
+
+SkuId         : 6a0f6da5-0b87-4190-a6ae-9bb5a2b9546a
+SkuPartNumber : Win10_VDA_E3
+ConsumedUnits : 1
+Enabled       : 20
+Suspended     : 0
+Warning       : 0
+
+SkuId         : 440eaaa8-b3e0-484b-a8be-62870b9ba70a
+SkuPartNumber : PHONESYSTEM_VIRTUALUSER
+ConsumedUnits : 0
+Enabled       : 3
+Suspended     : 0
+Warning       : 0
+
+SkuId         : 295a8eb0-f78d-45c7-8b5b-1eed5ed02dff
+SkuPartNumber : MCOCAP
+ConsumedUnits : 4
+Enabled       : 25
+Suspended     : 0
+Warning       : 0
+
+SkuId         : 6070a4c8-34c6-4937-8dfb-39bbc6397a60
+SkuPartNumber : MEETING_ROOM
+ConsumedUnits : 3
+Enabled       : 25
+Suspended     : 0
+Warning       : 0
+
+SkuId         : 184efa21-98c3-4e5d-95ab-d07053a96e67
+SkuPartNumber : INFORMATION_PROTECTION_COMPLIANCE
+ConsumedUnits : 1
+Enabled       : 20
+Suspended     : 0
+Warning       : 0
+
+
+
+https://docs.microsoft.com/es-es/microsoft-365/enterprise/view-account-license-and-service-details-with-microsoft-365-powershell?view=o365-worldwide
+
+PS C:\Users\zc01485\CODE\TeamsAutomation\TeamsProvisioningToolSet> $licensePlanList = Get-AzureADSubscribedSku
+
+PS C:\Users\zc01485\CODE\TeamsAutomation\TeamsProvisioningToolSet> $userList = Get-AzureADUser -ObjectID $userUPN | Select -ExpandProperty AssignedLicenses | Select SkuID 
+
+PS C:\Users\zc01485\CODE\TeamsAutomation\TeamsProvisioningToolSet> $userList | ForEach { $sku=$_.SkuId ; $licensePlanList | ForEach { If ( $sku -eq $_.ObjectId.substring($_.ObjectId.length - 36, 36) ) 
+{ Write-Host $_.SkuPartNumber } } }
+
+EMSPREMIUM
+ENTERPRISEPREMIUM
+PS C:\Users\zc01485\CODE\TeamsAutomation\TeamsProvisioningToolSet> Get-MsolUser -UserPrincipalName $userUPN | Format-List DisplayName,Licenses          
+
+
+
+DisplayName : Alex Wilber
+Licenses    : {CIE491264:EMSPREMIUM, CIE491264:ENTERPRISEPREMIUM}
+
+
+
+PS C:\Users\zc01485\CODE\TeamsAutomation\TeamsProvisioningToolSet>
