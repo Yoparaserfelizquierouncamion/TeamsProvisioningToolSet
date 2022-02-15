@@ -43,8 +43,20 @@ Import-Module .\module\commonIniFunctions.psm1
 $csvUsers = Import-Csv -Delimiter "," -Path $CSVFileToProcess
 
 ################################################################################
-## Leemos el fichero de configuracion
-$cfgDR = loadConfig ".\cnf\voiceRoutingDR.ini" "ESP"
+## Leemos el fichero de configuracion del script
+$commonCfg = loadConfig ".\cnf\common.ini" "conf"
+$commonDir = loadConfig ".\cnf\common.ini" "dir"
+
+Write-Host 
+
+################################################################################
+## Leemos el fichero de configuracion Direct Routing ESP
+$cfgDR = loadConfig $commonCfg.voiceRoutingDR "ESP"
+
+################################################################################
+## Creamos los ficheros de salida
+$startTime = (get-date).ToString("yyyyMdhhmm")
+$outputCsvFile=$commonDir.outputDir.ToString()+$startTime+"-"+$commonDir.outputName.ToString()
 
 ################################################################################
 # Captura de credenciales + Sign IN
@@ -150,8 +162,8 @@ foreach ($user in $csvUsers)
 			CsTeamsCallingPolicy=$cfgDR.CsTeamsCallingPolicy_name;
 			CsCallingLineIdentity=$cfgDR.CsCallingLineIdentity_name;
 			CsTeamsCallParkPolicy=$cfgDR.CsTeamsCallParkPolicy_name;
-			userRegisterPool=$userReadRegistrarPool;
-			configuredLineURI=$userReadLineUri;
+			userRegisterPool=$userReadRegistrarPool.RegistrarPool;
+			configuredLineURI=$userReadLineUri.LineUri;
 			endTime=$endTime}
 		#Write-Host $outUserData -ForegroundColor Red
 	}
@@ -165,4 +177,4 @@ foreach ($user in $csvUsers)
 
 ################################################################################
 # Recopilamos la info para control
-$outUserData | ForEach-Object{ [pscustomobject]$_ } | Export-CSV -Path "outFile\test.csv"
+$outUserData | ForEach-Object{ [pscustomobject]$_ } | Export-CSV -Path $outputCsvFile

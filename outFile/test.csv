@@ -1,4 +1,0 @@
-#TYPE System.Management.Automation.PSCustomObject
-"startTime","userUPN","e164Number","CsOnlineVoiceRoutingPolicy","CsTenantDialPlan","CsTeamsCallingPolicy","CsCallingLineIdentity","CsTeamsCallParkPolicy","userRegisterPool","configuredLineURI","endTime"
-"10/02/2022 20:04:57","nestorw@CIE491264.onmicrosoft.com","tel:+34912001043","VoiceRoutingPolicy1","DP.STA-INTL-NOPREMIUM","CP-1","CI-1","CPARK-1","@{RegistrarPool=sippooleu2ed602.infra.lync.com}","@{LineUri=34912001043}","10/02/2022 20:05:17"
-"10/02/2022 20:05:17","alexw@CIE491264.onmicrosoft.com","tel:+34912001044","VoiceRoutingPolicy1","DP.STA-INTL-NOPREMIUM","CP-1","CI-1","CPARK-1","@{RegistrarPool=sippooleu2ed602.infra.lync.com}","@{LineUri=34912001044}","10/02/2022 20:05:31"
