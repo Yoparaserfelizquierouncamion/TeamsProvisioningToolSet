@@ -1,0 +1,3 @@
+#TYPE System.Management.Automation.PSCustomObject
+"startTime","userUPN","e164Number","CsOnlineVoiceRoutingPolicy","CsTenantDialPlan","CsTeamsCallingPolicy","CsCallingLineIdentity","CsTeamsCallParkPolicy","userRegisterPool","configuredLineURI","errores","endTime"
+"16/02/2022 7:35:41","nestorw@CIE491264.onmicrosoft.com","tel:+34912001043","VoiceRoutingPolicy1","DP.STA-INTL-NOPREMIUM","CP-1","CI-1","CPARK-1","sippooleu2ed602.infra.lync.com","34912001043","","16/02/2022 7:36:05"

@@ -110,31 +110,37 @@ foreach ($user in $csvUsers)
 	#Write-Output ">> Construccion de parámetros"
 	#Write-Output "Parametros: $mailNickName, $userUPN, $display, $givenName, $surName, $usageLocation"
 
+	## Notas de provision
+	$info=""
+
 	$startTime = Get-Date -DisplayHint Date
-	Write-Output "Start time: $startTime"
+	#Write-Output "Start time: $startTime"
 	Write-Output ">> Configuracion del usuario"
 
 	## Verificamos si el usuario ya está creado
 	if (VerifyAzureADUser $userUPN) {
-		Write-Host ">> El usuario ya existe: $userUPN" -ForegroundColor Yellow
+		Write-Host ">> El usuario existe en AzureAD: $userUPN" -ForegroundColor Green
 	
 		## Verificamos si tiene licencia
 		if (VerifyADUserLicense $userUPN) {
-			Write-Output ">> El usuario ya tiene licencia"
+			Write-Host ">> El usuario tiene licencia: $userUPN" -ForegroundColor Green
 		}
 		else {
 			## Sino tiene licencia la asignamos
-			Write-Output ">> Asignación de licencia:$userUPN : $user.SKU"
-			Set-AzureADUserLicense -ObjectId $userUPN -AssignedLicenses $LicensesToAssign
+			#Write-Output ">> Asignación de licencia:$userUPN : $user.SKU"
+			#Set-AzureADUserLicense -ObjectId $userUPN -AssignedLicenses $LicensesToAssign
+			Write-Host ">> El usuario NO tiene licencia: $userUPN" -ForegroundColor Red
+			$info=$info+"|El usuario NO tiene licencia"
 		}
 	}
-	#else {
+	else {
 	#	## El usuario no existe, lo creamos y le añadimos licencia
 	#	Write-Host ">> Creamos el usuario: $userUPN" -ForegroundColor Green
 	#	New-AzureADUser -DisplayName $display -TelephoneNumber $telephoneNumber -GivenName $givenName -SurName $surName -UserPrincipalName $userUPN -UsageLocation $usageLocation -MailNickName $mailNickName -PasswordProfile $PasswordProfile -AccountEnabled $true
 	#	Write-Host ">> Asignación de licencia" -ForegroundColor Green
 	#	Set-AzureADUserLicense -ObjectId $userUPN -AssignedLicenses $LicensesToAssign
-	#}
+		$info=$info+"|El usuario NO existe"
+	}
 
 	if (VerifyTeamsUser $userUPN) {
 		## Verificamos si el usuario ya está activo => tarda un rato en activarse
@@ -164,12 +170,29 @@ foreach ($user in $csvUsers)
 			CsTeamsCallParkPolicy=$cfgDR.CsTeamsCallParkPolicy_name;
 			userRegisterPool=$userReadRegistrarPool.RegistrarPool;
 			configuredLineURI=$userReadLineUri.LineUri;
+			errores=$info;
 			endTime=$endTime}
 		#Write-Host $outUserData -ForegroundColor Red
 	}
 	else {
 		Write-Host "El usuario todavía no esta disponible en Teams, la activacion de usuarios suele tardar" -ForegroundColor Red
 		Write-Host "Vuelve a ejecutar el comando mas tarde" -ForegroundColor Red
+		$endTime = Get-Date -DisplayHint Date
+		$info=$info+"|El usuario NO esta disponible en Teams"
+
+		## Guardamos la info en el Array de salida para control
+		$outUserData+=[pscustomobject]@{startTime=$startTime;userUPN=$userUPN;e164Number=$E164number;
+			CsOnlineVoiceRoutingPolicy="";
+			CsTenantDialPlan="";
+			CsTeamsCallingPolicy="";
+			CsCallingLineIdentity="";
+			CsTeamsCallParkPolicy="";
+			userRegisterPool="";
+			configuredLineURI="";
+			errores=$info;
+			endTime=$endTime}
+		#Write-Host $outUserData -ForegroundColor Red
+
 	}
 
 	#Write-Host "----------------------------" -ForegroundColor Blue

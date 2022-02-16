@@ -1,0 +1,5 @@
+#TYPE System.Management.Automation.PSCustomObject
+"startTime","userUPN","e164Number","CsOnlineVoiceRoutingPolicy","CsTenantDialPlan","CsTeamsCallingPolicy","CsCallingLineIdentity","CsTeamsCallParkPolicy","userRegisterPool","configuredLineURI","errores","endTime"
+"16/02/2022 7:40:09","nestorw@CIE491264.onmicrosoft.com","tel:+34912001043","VoiceRoutingPolicy1","DP.STA-INTL-NOPREMIUM","CP-1","CI-1","CPARK-1","sippooleu2ed602.infra.lync.com","34912001043","","16/02/2022 7:40:35"
+"16/02/2022 7:40:35","alex@CIE491264.onmicrosoft.com","tel:+34912001044","System.Collections.Hashtable.CsOnlineVoiceRoutingPolicy_name","DP.STA-INTL-NOPREMIUM","CP-1","CI-1","CPARK-1","","","|El usuario NO existe|El usuario NO esta disponible en Teams","16/02/2022 7:40:37"
+"16/02/2022 7:40:37","biancap@CIE491264.onmicrosoft.com","tel:+34912001042","System.Collections.Hashtable.CsOnlineVoiceRoutingPolicy_name","DP.STA-INTL-NOPREMIUM","CP-1","CI-1","CPARK-1","","","|El usuario NO tiene licencia|El usuario NO esta disponible en Teams","16/02/2022 7:40:39"
